@@ -33,11 +33,11 @@
             this.player1ScoreLabel = new System.Windows.Forms.Label();
             this.player2ScoreLabel = new System.Windows.Forms.Label();
             this.winLabel = new System.Windows.Forms.Label();
+            this.subtitleLabel = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // gameTimer
             // 
-            this.gameTimer.Enabled = true;
             this.gameTimer.Interval = 20;
             this.gameTimer.Tick += new System.EventHandler(this.gameTimer_Tick);
             // 
@@ -74,12 +74,23 @@
             this.winLabel.TabIndex = 2;
             this.winLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
+            // subtitleLabel
+            // 
+            this.subtitleLabel.AutoSize = true;
+            this.subtitleLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 12.25F);
+            this.subtitleLabel.Location = new System.Drawing.Point(371, 287);
+            this.subtitleLabel.Name = "subtitleLabel";
+            this.subtitleLabel.Size = new System.Drawing.Size(0, 20);
+            this.subtitleLabel.TabIndex = 3;
+            this.subtitleLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.Black;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.subtitleLabel);
             this.Controls.Add(this.player2ScoreLabel);
             this.Controls.Add(this.player1ScoreLabel);
             this.Controls.Add(this.winLabel);
@@ -102,6 +113,7 @@
         private System.Windows.Forms.Label player1ScoreLabel;
         private System.Windows.Forms.Label player2ScoreLabel;
         private System.Windows.Forms.Label winLabel;
+        private System.Windows.Forms.Label subtitleLabel;
     }
 }
 
