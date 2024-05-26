@@ -89,5 +89,23 @@
   <ItemGroup>
     <None Include="Resources\game-over-31-179699.wav" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\OIP.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\rocket-launch-pixel-art-vector-20457603.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\225-2259762_rockets-clip-art.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\rocker1.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\rocker1-removebg-preview.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\rocker2-removebg-preview.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Media;
+using System.Diagnostics.Eventing.Reader;
 
 //Heet Patel
 //23 May, 2024
@@ -20,9 +21,12 @@ namespace Summative_Space_Race
     public partial class Form1 : Form
     {
         //Players variables
-        Rectangle player1 = new Rectangle(600, 439, 10, 10);
-        Rectangle player2 = new Rectangle(200, 439, 10, 10);
+        Rectangle player1 = new Rectangle(600, 439, 20, 20);
+        Rectangle player2 = new Rectangle(200, 439, 20, 20);
         int playersSpeed = 6;
+
+        Image rocket1 = (Properties.Resources.rocket1);
+        Image rocket2 = (Properties.Resources.rocket2);
 
         //List of meteoroids
         List<Rectangle> meteoroids = new List<Rectangle>();
@@ -34,17 +38,17 @@ namespace Summative_Space_Race
         int player2Score = 0;
         int time = 500;
 
+        //player1 and player2 keybinds
         bool upPressed = false;
         bool downPressed = false;
         bool wPressed = false;
         bool sPressed = false;
 
-        SolidBrush greenBrush = new SolidBrush(Color.Green);
         SolidBrush whiteBrush = new SolidBrush(Color.White);
         SolidBrush skyblueBrush = new SolidBrush(Color.SkyBlue);
         SolidBrush goldBrush = new SolidBrush(Color.Gold);
 
-        Pen greenPen = new Pen(Color.Green, 6);
+        Pen greenPen = new Pen(Color.Green, 6); //greenPen for time 
 
         SoundPlayer explosion = new SoundPlayer(Properties.Resources.explosionSoundEffect);
         SoundPlayer scoring = new SoundPlayer(Properties.Resources.scoringPoint);
@@ -65,52 +69,57 @@ namespace Summative_Space_Race
 
         private void Form1_Paint(object sender, PaintEventArgs e)
         {
-            //Drawing Players
-            e.Graphics.FillRectangle(greenBrush, player1);
-            e.Graphics.FillRectangle(greenBrush, player2);
-
-            for (int i = 0; i < meteoroids.Count(); i++)
+            if (gameTimer.Enabled == false && time > 0)
             {
-                e.Graphics.FillEllipse(whiteBrush, meteoroids[i]);
+                //Starting screen
+                titleLabel.Text = "Space Racer";
+                subtitleLabel.Text = "Press Space to Start or Esc to Exit";
+                instruction.Text = "On right Player1 \n On left Player2 \n Most Point wins";
             }
-
-            for (int i = 0; i < meteoroids.Count(); i++)
+            else if (gameTimer.Enabled == true)
             {
-                if (meteoroidColours[i] == "white")
+                //Update score display
+                player1ScoreLabel.Text = $"{player1Score}";
+                player2ScoreLabel.Text = $"{player2Score}";
+
+                //Draw the Players 
+                e.Graphics.DrawImage(rocket1, player1);
+                e.Graphics.DrawImage(rocket2, player2);
+
+                //Draw the time
+                e.Graphics.DrawLine(greenPen, 400, 450, 400, this.Height - time);
+
+                for (int i = 0; i < meteoroids.Count(); i++)
                 {
                     e.Graphics.FillEllipse(whiteBrush, meteoroids[i]);
                 }
-                else if (meteoroidColours[i] == "skyblue")
-                {
-                    e.Graphics.FillEllipse(skyblueBrush, meteoroids[i]);
-                }
-                else if (meteoroidColours[i] == "gold")
-                {
-                    e.Graphics.FillEllipse(goldBrush, meteoroids[i]);
-                }
-                e.Graphics.DrawLine(greenPen, 400, 450, 400, this.Height - time);
 
-
-                if (gameTimer.Enabled == false && time > 0)
+                for (int i = 0; i < meteoroids.Count(); i++)
                 {
-                    winLabel.Text = "Space Racer";
-                    subtitleLabel.Text = "Press Space to Start or Esc to Exit";
+                    if (meteoroidColours[i] == "white")
+                    {
+                        e.Graphics.FillEllipse(whiteBrush, meteoroids[i]);
+                    }
+                    else if (meteoroidColours[i] == "skyblue")
+                    {
+                        e.Graphics.FillEllipse(skyblueBrush, meteoroids[i]);
+                    }
+                    else if (meteoroidColours[i] == "gold")
+                    {
+                        e.Graphics.FillEllipse(goldBrush, meteoroids[i]);
+                    }
                 }
-
-                else
-                {
-                    player1ScoreLabel.Text = "";
-                    player2ScoreLabel.Text = "";
-
-                    winLabel.Text = "GAME OVER";
-                    subtitleLabel.Text = "Press Space to Start or Esc to Exit";
-                   
-                }
+            }
+            else 
+            {
+                //End of the Game screen
+                titleLabel.Text = "GAME OVER";
+                subtitleLabel.Text = "Press Space to Start or Esc to Exit";
             }
         }
 
         private void Form1_KeyDown(object sender, KeyEventArgs e)
-        {
+        { //setting of keybinds
             switch (e.KeyCode)
             {
                 case Keys.Up:
@@ -127,6 +136,7 @@ namespace Summative_Space_Race
                     sPressed = true;
                     break;
 
+                    //escape button for exiting before the game starts and space button for starting the game
                 case Keys.Escape:
                     if (gameTimer.Enabled == false)
                     {
@@ -143,11 +153,15 @@ namespace Summative_Space_Race
         }
         public void InitializeGame()
         {
+            //Reset everything
+            titleLabel.Text = "";
             winLabel.Text = "";
             subtitleLabel.Text = "";
+            instruction.Text = "";
 
             gameTimer.Enabled = true;
 
+            time = 500;
             player1Score = 0;
             player2Score = 0;
 
@@ -160,7 +174,7 @@ namespace Summative_Space_Race
         }
 
         private void Form1_KeyUp(object sender, KeyEventArgs e)
-        {
+        {  //doesn't activate the button if not pressed
             switch (e.KeyCode)
             {
                 case Keys.Up:
@@ -180,6 +194,9 @@ namespace Summative_Space_Race
 
         private void gameTimer_Tick(object sender, EventArgs e)
         {
+            //subtract the time
+            time--;
+
             //All commands for Player 1
             //move player 1
             if (upPressed == true && player1.Y > 0)
@@ -202,9 +219,7 @@ namespace Summative_Space_Race
                 player2.Y = player2.Y + playersSpeed;
             }
 
-
             //creating new meteoroid
-
             //Make obstacles move left to right.
             for (int i = 0; i < meteoroids.Count; i++)
             {
@@ -212,12 +227,13 @@ namespace Summative_Space_Race
                 meteoroids[i] = new Rectangle(x, meteoroids[i].Y, meteoroidSize[i], meteoroidSize[i]);
             }
 
-            //new asteroids
+            //new meteoroids
             randValue = randGen.Next(0, 100);
 
+            //draw different colour, size and speed meteoroids
             if (randValue < 10)
             {
-                randValue = randGen.Next(0, this.Height);
+                randValue = randGen.Next(0, this.Height - 25);
 
                 Rectangle ball = new Rectangle(0, randValue, 0, 0);
                 meteoroids.Add(ball);
@@ -227,7 +243,7 @@ namespace Summative_Space_Race
             }
             else if (randValue < 15)
             {
-                randValue = randGen.Next(0, this.Height);
+                randValue = randGen.Next(0, this.Height- 25);
 
                 Rectangle ball = new Rectangle(this.Width - 8, randValue, 0, 0);
                 meteoroids.Add(ball);
@@ -237,7 +253,7 @@ namespace Summative_Space_Race
             }
             else if (randValue < 20)
             {
-                randValue = randGen.Next(0, this.Height);
+                randValue = randGen.Next(0, this.Height - 25);
 
                 Rectangle ball = new Rectangle(this.Width - 8, randValue, 0, 0);
                 meteoroids.Add(ball);
@@ -247,7 +263,7 @@ namespace Summative_Space_Race
             }
             else if (randValue < 20)
             {
-                randValue = randGen.Next(0, this.Height);
+                randValue = randGen.Next(0, this.Height - 25);
 
                 Rectangle ball = new Rectangle(0, randValue, 0, 0);
                 meteoroids.Add(ball);
@@ -255,9 +271,9 @@ namespace Summative_Space_Race
                 meteoroidSpeeds.Add(randGen.Next(5, -10));
                 meteoroidSize.Add(randGen.Next(5, 13));
             }
-            else if (randValue < 25)
+            else if (randValue < 40)
             {
-                randValue = randGen.Next(0, this.Height);
+                randValue = randGen.Next(0, this.Height - 25);
 
                 Rectangle ball = new Rectangle(0, randValue, 0, 0);
                 meteoroids.Add(ball);
@@ -265,9 +281,9 @@ namespace Summative_Space_Race
                 meteoroidSpeeds.Add(randGen.Next(5, 10));
                 meteoroidSize.Add(randGen.Next(5, 13));
             }
-            else if (randValue < 25)
+            else if (randValue < 40)
             {
-                randValue = randGen.Next(0, this.Height);
+                randValue = randGen.Next(0, this.Height - 25 );
 
                 Rectangle ball = new Rectangle(this.Width - 8, randValue, 0, 0);
                 meteoroids.Add(ball);
@@ -339,8 +355,8 @@ namespace Summative_Space_Race
                 player2.Y = 439;
             }
 
-            //Game ends when player reach to 3 points
-            if (player1Score == 3)
+            //Game ends when time ends and the player with most point wins the game or tie if equal score
+            if (time == 0 && player1Score > player2Score)
             {
                 scoring.Play();
                 winLabel.Text = "Player1 Wins";
@@ -348,7 +364,7 @@ namespace Summative_Space_Race
 
                 gameTimer.Stop();
             }
-            else if (player2Score == 3)
+            else if (time == 0 && player1Score < player2Score)
             {
                 scoring.Play();
                 winLabel.Text = "Player2 Wins";
@@ -356,14 +372,12 @@ namespace Summative_Space_Race
 
                 gameTimer.Stop();
             }
-            else
+            else if (time == 0 && player1Score == player2Score)
             {
-                // winLabel.Text = "Tie";
+                winLabel.Text = "Tie";
 
-                //gameTimer.Stop(); 
+                gameTimer.Stop();
             }
-
-            time--;
 
             Refresh();
         }
